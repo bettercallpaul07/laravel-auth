@@ -1,10 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\UpdateProjectRequest;
+
+
+//Helpers
+use Illuminate\Support\Str;
 
 class ProjectController extends Controller
 {
@@ -15,7 +20,9 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        //
+        $projects = Project::all();
+
+        return view("admin.projects.index", compact("projects"));
     }
 
     /**
@@ -25,7 +32,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+        return view("admin.projects.create");
     }
 
     /**
@@ -36,7 +43,24 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        //
+        //qui prendiamo gli input validati
+        $data = $request->validated();
+
+        //rendiamo uno slug il titolo importando Str come helpers
+        $slug = Str::slug($data["title"]);
+
+        $newProject = Project::create([
+            "title" => $data["title"],
+            "slug" => $slug,
+            "content" => $data["content"],
+        ]);
+
+        //oppure
+        //$data["slug"] = Str::slug($data["title"]);
+        //$newProject = Project::create($data); 
+
+        //facciamo il redirect alla show dopo aver salvato i dati
+        return redirect()->route("admin.projects.show", $newProject);
     }
 
     /**
@@ -47,7 +71,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        //
+        return view("admin.projects.show", compact("project"));
     }
 
     /**
