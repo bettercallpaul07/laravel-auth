@@ -38,9 +38,18 @@
                         <a href="{{ route("admin.projects.edit", $project->id) }}" class="btn btn-warning">
                             Aggiorna
                         </a>
-                        <a href="#" class="btn btn-danger">
-                            Elimina
-                        </a>
+                        <form
+                        action="{{ route("admin.projects.destroy", $project->id) }}"
+                        class="d-inline-block"
+                        method="POST"
+                        onsubmit="return confirm('Sei sicuro di volerlo eliminare?');">
+                        @csrf
+                        @method("DELETE")
+                            <button class="btn btn-danger">
+                                Elimina
+                            </button>
+                        </form>
+
                     </td>
                   </tr>
                   @endforeach
